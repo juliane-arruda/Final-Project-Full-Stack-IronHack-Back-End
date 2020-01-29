@@ -32,7 +32,7 @@ mongoose
 
 app.use(cors({
   credentials: true,
-  origin: ['http://localhost:5000'],
+  origin: ['http://localhost:3000'],
   // <== this will be the URL of our React app (it will be running on port 3000)
 }));
 
@@ -66,7 +66,7 @@ const pets = require('./routes/pet-route')
 
 // app.use('/', indexRouter);
 // app.use('/users', usersRouter);
-app.use('/auth', authRoutes);
+app.use('/', authRoutes);
 app.use('/', pets);
 
 // catch 404 and forward to error handler

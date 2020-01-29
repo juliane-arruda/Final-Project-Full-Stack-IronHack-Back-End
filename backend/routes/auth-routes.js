@@ -8,7 +8,7 @@ const bcrypt = require('bcryptjs');
 const User = require('../models/user');
 
 authRoutes.post('/signup', (req, res, next) => {
-    const {username, password, email, role} = req.body;
+    const {username, password, date, email, role} = req.body;
 
   
     if (!username || !password) {

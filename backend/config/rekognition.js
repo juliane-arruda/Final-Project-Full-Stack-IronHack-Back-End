@@ -1,5 +1,6 @@
 const aws = require('aws-sdk');
 const fs = require('fs');
+const axios = require('axios');
 
 const awsRekognition = new aws.Rekognition({
   accessKeyId: process.env.ACCESSKEYID,
@@ -19,7 +20,7 @@ const awsRekognition = new aws.Rekognition({
 // });
 
 
-const catImg = fs.readFileSync('/Users/ironhack/Downloads/cat.jpg');
+// const catImg = fs.readFileSync('/Users/ironhack/Downloads/cat.jpg');
 const dog = 'https://www.petlove.com.br/images/breeds/216944/profile/original/Screen_Shot_2019-11-22_at_17.22.11.png?1574454200';
 const cat = 'https://ak8.picdn.net/shutterstock/videos/18338188/thumb/1.jpg';
 const cat2 = 'https://img.zipanuncios.com.br/1854532/2.jpg';

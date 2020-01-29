@@ -5,7 +5,6 @@ const userSchema = new Schema({
     username: String,
     email: String,
     password: String,
-    date: String,
     role: {
     type: String,
     enum: ['LOST', 'FOUND'],
