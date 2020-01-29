@@ -7,7 +7,7 @@ const mongoose = require('mongoose');
 const logger = require('morgan');
 const path = require('path');
 const cors = require('cors');
-require('./config/rekognition')
+require('./config/rekognition');
 
 const app = express();
 
@@ -15,24 +15,22 @@ const session = require('express-session');
 const passport = require('passport');
 require('./configs/passport');
 
-
-
 mongoose
-.connect(process.env.MONGODB_URI, {
-  useNewUrlParser: true,
-})
-.then((x) => {
-  // eslint-disable-next-line no-console
-  console.log(`Connected to Mongo! Database name: "${x.connections[0].name}"`);
-})
-.catch((err) => {
-  // eslint-disable-next-line no-console
-  console.error('Error connecting to mongo', err);
-});
+  .connect(process.env.MONGODB_URI, {
+    useNewUrlParser: true,
+  })
+  .then((x) => {
+    // eslint-disable-next-line no-console
+    console.log(`Connected to Mongo! Database name: "${x.connections[0].name}"`);
+  })
+  .catch((err) => {
+    // eslint-disable-next-line no-console
+    console.error('Error connecting to mongo', err);
+  });
 
 app.use(cors({
   credentials: true,
-  origin: ['http://localhost:5000'],
+  origin: ['http://localhost:3000'],
   // <== this will be the URL of our React app (it will be running on port 3000)
 }));
 
@@ -50,10 +48,10 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(session({
-  secret: "I cat your pet",
+  secret: 'I cat your pet',
   resave: true,
-  saveUninitialized: true
-}))
+  saveUninitialized: true,
+}));
 
 app.use(passport.initialize());
 app.use(passport.session());
@@ -62,7 +60,7 @@ app.use(passport.session());
 // const indexRouter = require('./routes/index');
 // const usersRouter = require('./routes/users');
 const authRoutes = require('./routes/auth-routes');
-const pets = require('./routes/pet-route')
+const pets = require('./routes/pet-route');
 
 // app.use('/', indexRouter);
 // app.use('/users', usersRouter);
