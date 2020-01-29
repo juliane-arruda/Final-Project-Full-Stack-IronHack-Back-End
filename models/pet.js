@@ -6,6 +6,7 @@ const petSchema = new Schema({
   petDescription: String,
   image: String,
   petLocation: String,
+  // date: String,
   owner: {
     type: Schema.Types.ObjectId,
     ref: 'User'
