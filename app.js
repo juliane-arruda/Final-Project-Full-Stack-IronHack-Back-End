@@ -64,7 +64,7 @@ const pets = require('./routes/pet-route');
 
 // app.use('/', indexRouter);
 // app.use('/users', usersRouter);
-app.use('/auth', authRoutes);
+app.use('/', authRoutes);
 app.use('/', pets);
 
 // catch 404 and forward to error handler
