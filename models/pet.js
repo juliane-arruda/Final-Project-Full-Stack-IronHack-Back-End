@@ -9,7 +9,7 @@ const petSchema = new Schema({
   // date: String,
   owner: {
     type: Schema.Types.ObjectId,
-    ref: 'User'
+    ref: 'User',
   },
 },
   {
@@ -20,5 +20,4 @@ const petSchema = new Schema({
 const Pet = mongoose.model('Pet', petSchema)
 
 module.exports = Pet;
-
 
