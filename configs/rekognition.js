@@ -14,7 +14,7 @@ const cat2 = 'https://img.zipanuncios.com.br/1854532/2.jpg';
 const fish = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQTjx5pZmzcO7FXGAixKuDvA-Zh2H1-fCkh2peNsvvkO3yg3pWx&s';
 const passaro = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRaPgDHCG8aP5apav7lV1tqw8gBSN6ubcJyRCTdUGc8uu9iy-6TOA&s';
 
-axios.get(passaro, {
+const detectUrl = (url) => axios.get(url, {
   responseType: 'arraybuffer',
 }).then((response) => {
   const params = {
@@ -28,12 +28,11 @@ axios.get(passaro, {
       console.log(err, err.stack); // an error occurred
       return;
     }
-    const catOrDog = data.Labels.filter((pet) => pet.Name === 'Cat' || pet.Name === 'Dog' || pet.Name === 'Bird');
+    const catOrDog = data.Labels.filter((pet) => pet.Name === 'Cat' || pet.Name === 'Dog');
     console.log(catOrDog[0].Name);
     console.log(data); // successful response
   });
-})
-  .catch((error) => console.log(error));
+}).catch((error) => console.log(error));
 
 
 // const dogImg = fs.readFileSync('/home/juliane/Downloads/teste1.jpeg');
@@ -47,4 +46,8 @@ axios.get(passaro, {
 //   if (err) console.log(err, err.stack); // an error occurred
 //   else console.log(data); // successful response
 // });
+
+module.exports = {
+  detectUrl,
+};
 

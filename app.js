@@ -7,7 +7,7 @@ const mongoose = require('mongoose');
 const logger = require('morgan');
 const path = require('path');
 const cors = require('cors');
-require('./config/rekognition');
+require('./configs/rekognition');
 
 const app = express();
 
@@ -62,6 +62,9 @@ app.use(passport.session());
 const authRoutes = require('./routes/auth-routes');
 const pets = require('./routes/pet-route');
 
+// include your new routes here:
+app.use('/api', require('./routes/photo-routes'));
+
 // app.use('/', indexRouter);
 // app.use('/users', usersRouter);
 app.use('/', authRoutes);
@@ -82,5 +85,6 @@ app.use((err, req, res) => {
   res.status(err.status || 500);
   // res.render('error');
 });
+
 
 module.exports = app;
