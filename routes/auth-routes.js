@@ -32,7 +32,6 @@ authRoutes.post('/signup', (req, res, next) => {
   User.findOne({
     username
   }, (err, foundUser) => {
-
     if (err) {
       res.status(500).json({
         message: "Username check went bad."
@@ -51,10 +50,10 @@ authRoutes.post('/signup', (req, res, next) => {
     const hashPass = bcrypt.hashSync(password, salt);
 
     const aNewUser = new User({
-      username: username,
+      username,
       password: hashPass,
-      email: email,
-      role: role
+      email,
+      role,
     });
 
     aNewUser.save(err => {
@@ -64,40 +63,42 @@ authRoutes.post('/signup', (req, res, next) => {
         });
         return;
       }
-<<<<<<< HEAD:routes/auth-routes.js
-
-      // Automatically log in user after sign up
-      // .login() here is actually predefined passport method
-      req.login(aNewUser, (err) => {
-
-=======
-  
-      const salt = bcrypt.genSaltSync(10);
-      const hashPass = bcrypt.hashSync(password, salt);
-  
-      const aNewUser = new User({
-        username: username,
-        password: hashPass,
-        email: email,
-        role: role
-      });
-  
-      aNewUser.save(err => {
->>>>>>> joyce:backend/routes/auth-routes.js
-        if (err) {
-          res.status(500).json({
-            message: 'Login after signup went bad.'
-          });
-          return;
-        }
-
-        // Send the user's information to the frontend
-        // We can use also: res.status(200).json(req.user);
-        res.status(200).json(aNewUser);
-      });
     });
   });
 });
+
+// Automatically log in user after sign up
+// .login() here is actually predefined passport method
+
+// authRoutes.
+// req.login(aNewUser, (err) => {
+
+
+//   const salt = bcrypt.genSaltSync(10);
+//   const hashPass = bcrypt.hashSync(password, salt);
+
+//   const aNewUser = new User({
+//     username: username,
+//     password: hashPass,
+//     email: email,
+//     role: role
+//   });
+
+//   aNewUser.save(err => {
+//     if (err) {
+//       res.status(500).json({
+//         message: 'Login after signup went bad.'
+//       });
+//       return;
+//     }
+
+//     // Send the user's information to the frontend
+//     // We can use also: res.status(200).json(req.user);
+//     res.status(200).json(aNewUser);
+//   });
+// });
+// });
+// });
 
 // LOGIN
 authRoutes.post('/login', (req, res, next) => {
@@ -128,7 +129,7 @@ authRoutes.post('/login', (req, res, next) => {
       // We are now logged in (that's why we can also send req.user)
       res.status(200).json(theUser);
     });
-  })(req, res, next);
+  });
 });
 
 // LOGOUT 
@@ -136,7 +137,7 @@ authRoutes.get('/logout', (req, res, next) => {
   // req.logout() is defined by passport
   req.logout();
   res.status(200).json({
-    message: 'Log out success!'
+    message: 'Log out success!',
   });
 });
 
@@ -149,7 +150,7 @@ authRoutes.get('/loggedin', (req, res, next) => {
     return;
   }
   res.status(403).json({
-    message: 'Unauthorized'
+    message: 'Unauthorized',
   });
 });
 
