@@ -64,11 +64,26 @@ authRoutes.post('/signup', (req, res, next) => {
         });
         return;
       }
+<<<<<<< HEAD:routes/auth-routes.js
 
       // Automatically log in user after sign up
       // .login() here is actually predefined passport method
       req.login(aNewUser, (err) => {
 
+=======
+  
+      const salt = bcrypt.genSaltSync(10);
+      const hashPass = bcrypt.hashSync(password, salt);
+  
+      const aNewUser = new User({
+        username: username,
+        password: hashPass,
+        email: email,
+        role: role
+      });
+  
+      aNewUser.save(err => {
+>>>>>>> joyce:backend/routes/auth-routes.js
         if (err) {
           res.status(500).json({
             message: 'Login after signup went bad.'
