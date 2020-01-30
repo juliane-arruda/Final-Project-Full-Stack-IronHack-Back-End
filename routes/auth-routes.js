@@ -5,13 +5,20 @@ const passport = require('passport');
 const bcrypt = require('bcryptjs');
 
 const User = require('../models/user');
+const Pet = require('../models/pet')
 
 authRoutes.post('/signup', (req, res, next) => {
+  console.log(req.body)
   const {
     username,
     password,
     email,
-    role
+    role,
+    petName,
+    petDescription,
+    imageUrl,
+    petLocation,
+    petDate,
   } = req.body;
 
 
@@ -56,6 +63,14 @@ authRoutes.post('/signup', (req, res, next) => {
       role,
     });
 
+    const aNewPet = new Pet({
+      petName,
+      petDescription,
+      imageUrl,
+      petLocation,
+      petDate,
+    })
+
     aNewUser.save(err => {
       if (err) {
         res.status(400).json({
@@ -63,42 +78,33 @@ authRoutes.post('/signup', (req, res, next) => {
         });
         return;
       }
+
+      aNewPet.save(err => {
+        if (err) {
+          res.status(400).json({
+            message: 'Saving user to database went wrong.'
+          });
+          return;
+        }
+
+        // Automatically log in user after sign up
+        req.login(aNewUser, (err) => {
+
+          if (err) {
+            res.status(500).json({
+              message: 'Login after signup went bad.'
+            });
+            return;
+          }
+
+          // Send the user's information to the frontend
+          // We can use also: res.status(200).json(req.user);
+          res.status(200).json(aNewUser);
+        });
+      });
     });
   });
 });
-
-// Automatically log in user after sign up
-// .login() here is actually predefined passport method
-
-// authRoutes.
-// req.login(aNewUser, (err) => {
-
-
-//   const salt = bcrypt.genSaltSync(10);
-//   const hashPass = bcrypt.hashSync(password, salt);
-
-//   const aNewUser = new User({
-//     username: username,
-//     password: hashPass,
-//     email: email,
-//     role: role
-//   });
-
-//   aNewUser.save(err => {
-//     if (err) {
-//       res.status(500).json({
-//         message: 'Login after signup went bad.'
-//       });
-//       return;
-//     }
-
-//     // Send the user's information to the frontend
-//     // We can use also: res.status(200).json(req.user);
-//     res.status(200).json(aNewUser);
-//   });
-// });
-// });
-// });
 
 // LOGIN
 authRoutes.post('/login', (req, res, next) => {

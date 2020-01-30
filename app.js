@@ -63,7 +63,7 @@ const authRoutes = require('./routes/auth-routes');
 const pets = require('./routes/pet-route');
 
 // include your new routes here:
-app.use('/api', require('./routes/photo-routes'));
+app.use('/', require('./routes/photo-routes'));
 
 // app.use('/', indexRouter);
 // app.use('/users', usersRouter);

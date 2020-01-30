@@ -4,9 +4,9 @@ const Schema = mongoose.Schema;
 const petSchema = new Schema({
   petName: String,
   petDescription: String,
-  image: String,
+  imageUrl: String,
   petLocation: String,
-  // date: String,
+  petDate: String,
   owner: {
     type: Schema.Types.ObjectId,
     ref: 'User'
