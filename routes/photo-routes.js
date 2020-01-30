@@ -7,6 +7,7 @@ const uploader = require('../configs/cloudinary');
 
 router.get((req, res) => res.json('teste'));
 
+// esse aqui faz o upload da imagem
 router.post('/upload', uploader.single('imageUrl'), (req, res, next) => {
   // console.log('file is: ', req.file)
 
@@ -19,6 +20,10 @@ router.post('/upload', uploader.single('imageUrl'), (req, res, next) => {
   res.json({
     secure_url: req.file.secure_url,
   });
+});
+
+// esse aqui é executado quando aperta o botão salvar
+router.post('/photo', (req, res, next) => {
 });
 
 module.exports = router;
