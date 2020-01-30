@@ -50,7 +50,6 @@ authRoutes.post('/signup', (req, res, next) => {
         username: username,
         password: hashPass,
         email: email,
-        date: date,
         role: role
       });
   
