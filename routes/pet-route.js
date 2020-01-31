@@ -40,10 +40,18 @@ router.get('/pets', (req, res, next) => {
     });
 });
 
-//GET route => to get pets perdidos
-// router.get('/pets-perdidos', (req, res, next) => {
-//   Pet.find().filter()
-// })
+// GET route => to get pets perdidos
+router.get('/pets-perdidos', (req, res, next) => {
+  Pet.find().filter({
+    
+  })
+  .then((petsPerdidos) => {
+    res.json(petsPerdidos)
+  })
+  .catch((err) => {
+    res.json(err);
+  });
+})
 
 
 // GET route => to get a specific pet/detailed view
@@ -74,16 +82,16 @@ router.put('/pets/:id', (req, res, next) => {
     return;
   }
 
-  Pet.findByIdAndUpdate(req.params.id, req.body)
-    .then((pet) => {
-      res.json({
-        pet
-      });
-    })
-    .catch((err) => {
-      res.json(err);
-    });
-});
+//   Pet.findByIdAndUpdate(req.params.id, req.body)
+//     .then((pet) => {
+//       res.json({
+//         pet
+//       });
+//     })
+//     .catch((err) => {
+//       res.json(err);
+//     });
+// });
 
 
 // DELETE route => to delete a specific pet
