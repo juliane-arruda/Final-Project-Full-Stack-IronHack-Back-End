@@ -1,14 +1,14 @@
 const express = require('express');
 const authRoutes = express.Router();
 
-const passport = require('passport');
+// const passport = require('passport');
 const bcrypt = require('bcryptjs');
 
 const User = require('../models/user');
 const Pet = require('../models/pet')
 
 authRoutes.post('/signup', (req, res, next) => {
-  console.log(req.body)
+  // console.log(req.body)
   const {
     username,
     password,
@@ -60,7 +60,6 @@ authRoutes.post('/signup', (req, res, next) => {
       username,
       password: hashPass,
       email,
-      role,
     });
 
     const aNewPet = new Pet({
@@ -69,6 +68,7 @@ authRoutes.post('/signup', (req, res, next) => {
       imageUrl,
       petLocation,
       petDate,
+      role,
     })
 
     aNewUser.save(err => {
@@ -108,35 +108,68 @@ authRoutes.post('/signup', (req, res, next) => {
 
 // LOGIN
 authRoutes.post('/login', (req, res, next) => {
-  passport.authenticate('local', (err, theUser, failureDetails) => {
-    if (err) {
-      res.status(500).json({
-        message: 'Something went wrong authenticating user'
-      });
-      return;
-    }
+  const { username, password } = req.body;
+  if (username === "" || password === "") {
+    res.json( {errorMessage}, {
+      errorMessage: "Please enter both, username and password to sign up."
+    });
+    return;
+  }
 
-    if (!theUser) {
-      // "failureDetails" contains the error messages
-      // from our logic in "LocalStrategy" { message: '...' }.
-      res.status(401).json(failureDetails);
-      return;
-    }
-
-    // save user in session
-    req.login(theUser, (err) => {
-      if (err) {
-        res.status(500).json({
-          message: 'Session save went bad.'
+  User.findOne({ "username": username })
+  .then(user => {
+      if (!user) {
+        res.json({ errorMessage }, {
+          errorMessage: "The username doesn't exist."
         });
         return;
       }
-
-      // We are now logged in (that's why we can also send req.user)
-      res.status(200).json(theUser);
-    });
-  });
+      if (bcrypt.compareSync(password, user.password)) {
+        // Save the login in the session!
+        req.session.currentUser = user;
+        res.json({user});
+      } else {
+        res.json({ errorMessage }, {
+          errorMessage: "Incorrect password"
+        });
+      }
+  })
+  .catch(error => {
+    next(error);
+  })
 });
+// authRoutes.post('/login', (req, res, next) => {
+//   console.log("1")
+//   passport.authenticate('local', (err, theUser, failureDetails) => {
+//     console.log('erro')
+//     if (err) {
+//       res.status(500).json({
+//         message: 'Something went wrong authenticating user'
+//       });
+//       return;
+//     }
+// console.log('2')
+//     if (!theUser) {
+//       // "failureDetails" contains the error messages
+//       // from our logic in "LocalStrategy" { message: '...' }.
+//       res.status(401).json(failureDetails);
+//       return;
+//     }
+
+//     // save user in session
+//     req.login(theUser, (err) => {
+//       if (err) {
+//         res.status(500).json({
+//           message: 'Session save went bad.'
+//         });
+//         return;
+//       }
+
+//       // We are now logged in (that's why we can also send req.user)
+//       res.status(200).json(theUser);
+//     });
+//   });
+// });
 
 // LOGOUT 
 authRoutes.get('/logout', (req, res, next) => {

@@ -7,6 +7,10 @@ const petSchema = new Schema({
   imageUrl: String,
   petLocation: String,
   petDate: String,
+  role: {
+    type: String,
+    enum: ['perdido', 'encontrado'],
+  },
   owner: {
     type: Schema.Types.ObjectId,
     ref: 'User',
