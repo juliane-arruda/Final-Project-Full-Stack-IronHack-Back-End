@@ -40,6 +40,11 @@ router.get('/pets', (req, res, next) => {
     });
 });
 
+//GET route => to get pets perdidos
+// router.get('/pets-perdidos', (req, res, next) => {
+//   Pet.find().filter()
+// })
+
 
 // GET route => to get a specific pet/detailed view
 router.get('/pets/:id', (req, res, next) => {
@@ -59,8 +64,9 @@ router.get('/pets/:id', (req, res, next) => {
     });
 });
 
+
 // PUT route => to update a specific pet
-router.put('/pets/:id/edit', (req, res, next) => {
+router.put('/pets/:id', (req, res, next) => {
   if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
     res.status(400).json({
       message: 'Specified id is not valid',
@@ -69,9 +75,9 @@ router.put('/pets/:id/edit', (req, res, next) => {
   }
 
   Pet.findByIdAndUpdate(req.params.id, req.body)
-    .then(() => {
+    .then((pet) => {
       res.json({
-        message: ` ${req.params.id} atualizado com sucesso.`,
+        pet
       });
     })
     .catch((err) => {
