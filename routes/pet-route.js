@@ -8,7 +8,7 @@ const Pet = require('../models/pet');
 const User = require('../models/user');
 
 
-// POST route => to create a new project
+// POST route => to create a new pet
 router.post('/pet', (req, res, next) => {
   Pet.create({
     petName: req.body.petName,
@@ -16,6 +16,7 @@ router.post('/pet', (req, res, next) => {
     image: req.body.image,
     owner: req.user._id,
     petLocation: req.body.petLocation,
+    role: req.body.role
   })
     .then((response) => {
       res.json(response);
@@ -41,7 +42,7 @@ router.get('/pets', (req, res, next) => {
 
 
 // GET route => to get a specific pet/detailed view
-router.get('/pet/:id', (req, res, next) => {
+router.get('/pets/:id', (req, res, next) => {
   if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
     res.status(400).json({
       message: 'Specified id is not valid',
@@ -59,7 +60,7 @@ router.get('/pet/:id', (req, res, next) => {
 });
 
 // PUT route => to update a specific pet
-router.put('/pet/:id', (req, res, next) => {
+router.put('/pets/:id/edit', (req, res, next) => {
   if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
     res.status(400).json({
       message: 'Specified id is not valid',
@@ -80,7 +81,7 @@ router.put('/pet/:id', (req, res, next) => {
 
 
 // DELETE route => to delete a specific pet
-router.delete('/pet/:id', (req, res, next) => {
+router.delete('/pets/:id', (req, res, next) => {
   if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
     res.status(400).json({
       message: 'Specified id is not valid',

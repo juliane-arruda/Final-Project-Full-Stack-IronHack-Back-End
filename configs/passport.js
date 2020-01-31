@@ -3,6 +3,8 @@ const bcrypt = require('bcryptjs'); // !!!
 const passport = require('passport');
 const User = require('../models/user');
 
+const func = (() => console.log("passport"))
+
 passport.serializeUser((loggedInUser, cb) => {
   cb(null, loggedInUser._id);
 });
@@ -18,6 +20,7 @@ passport.deserializeUser((userIdFromSession, cb) => {
 });
 
 passport.use(new LocalStrategy((username, password, next) => {
+  console.log('ok')
   User.findOne({
     username,
   }, (err, foundUser) => {
@@ -43,3 +46,4 @@ passport.use(new LocalStrategy((username, password, next) => {
     next(null, foundUser);
   });
 }));
+
