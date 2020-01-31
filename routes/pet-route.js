@@ -91,7 +91,7 @@ router.put('/pets/:id', (req, res, next) => {
 //     .catch((err) => {
 //       res.json(err);
 //     });
-// });
+});
 
 
 // DELETE route => to delete a specific pet
