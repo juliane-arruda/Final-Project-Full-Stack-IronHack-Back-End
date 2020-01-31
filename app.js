@@ -14,6 +14,8 @@ const app = express();
 const session = require('express-session');
 const passport = require('passport');
 require('./configs/passport');
+const LocalStrategy = require('passport-local').Strategy;
+const User = require('./models/user');
 
 mongoose
   .connect(process.env.MONGODB_URI, {
@@ -56,6 +58,19 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
+// passport.use(new LocalStrategy(
+//   function(username, password, done) {
+//     User.findOne({ username: username }, function (err, user) {
+//       if (err) { return done(err); }
+//       if (!user) { return done(null, false); }
+//       if (!user.verifyPassword(password)) { return done(null, false); }
+//       return done(null, user);
+//     });
+//   }
+// ));
+// app.post('/login', passport.authenticate('local', { failureRedirect: '/login' }), (req, res) => {
+//   res.json({msg: 'foi'})
+// })
 
 // const indexRouter = require('./routes/index');
 // const usersRouter = require('./routes/users');

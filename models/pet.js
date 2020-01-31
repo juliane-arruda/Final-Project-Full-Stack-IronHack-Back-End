@@ -11,6 +11,10 @@ const petSchema = new Schema({
   type: {
     type: String,
     enum: ['dog', 'cat'],
+  role: {
+    type: String,
+    enum: ['perdido', 'encontrado'],
+
   },
   owner: {
     type: Schema.Types.ObjectId,
