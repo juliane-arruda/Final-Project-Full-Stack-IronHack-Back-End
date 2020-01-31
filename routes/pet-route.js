@@ -13,7 +13,7 @@ router.post('/pet', (req, res, next) => {
   Pet.create({
     petName: req.body.petName,
     petDescription: req.body.petDescription,
-    image: req.body.image,
+    imageUrl: req.body.image,
     owner: req.user._id,
     petLocation: req.body.petLocation,
   })

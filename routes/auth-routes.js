@@ -1,14 +1,14 @@
 const express = require('express');
-const authRoutes = express.Router();
-
 const passport = require('passport');
 const bcrypt = require('bcryptjs');
-
 const User = require('../models/user');
-const Pet = require('../models/pet')
+const Pet = require('../models/pet');
+const Rekognition = require('../configs/rekognition');
+
+const authRoutes = express.Router();
 
 authRoutes.post('/signup', (req, res, next) => {
-  console.log(req.body)
+  console.log(req.body); // <==
   const {
     username,
     password,
@@ -24,31 +24,31 @@ authRoutes.post('/signup', (req, res, next) => {
 
   if (!username || !password) {
     res.status(400).json({
-      message: 'Provide username and password'
+      message: 'Provide username and password',
     });
     return;
   }
 
   if (password.length < 5) {
     res.status(400).json({
-      message: 'Please make your password at least 5 characters long for security purposes.'
+      message: 'Please make your password at least 5 characters long for security purposes.',
     });
     return;
   }
 
   User.findOne({
-    username
+    username,
   }, (err, foundUser) => {
     if (err) {
       res.status(500).json({
-        message: "Username check went bad."
+        message: 'Username check went bad.',
       });
       return;
     }
 
     if (foundUser) {
       res.status(400).json({
-        message: 'Username taken. Choose another one.'
+        message: 'Username taken. Choose another one.',
       });
       return;
     }
@@ -63,43 +63,53 @@ authRoutes.post('/signup', (req, res, next) => {
       role,
     });
 
-    const aNewPet = new Pet({
-      petName,
-      petDescription,
-      imageUrl,
-      petLocation,
-      petDate,
-    })
-
-    aNewUser.save(err => {
-      if (err) {
+    // comparecao com api da imagem
+    Rekognition.detectUrl(imageUrl).then((imageResult) => {
+      if (imageResult.type === null) {
         res.status(400).json({
-          message: 'Saving user to database went wrong.'
+          message: 'animal not recognized',
         });
         return;
       }
 
-      aNewPet.save(err => {
+      aNewUser.save((err) => {
         if (err) {
           res.status(400).json({
-            message: 'Saving user to database went wrong.'
+            message: 'Saving user to database went wrong.',
           });
           return;
         }
 
-        // Automatically log in user after sign up
-        req.login(aNewUser, (err) => {
+        const aNewPet = new Pet({
+          petName,
+          petDescription,
+          imageUrl,
+          petLocation,
+          petDate,
+          type: imageResult.type,
+        });
 
+        aNewPet.save((err) => {
           if (err) {
-            res.status(500).json({
-              message: 'Login after signup went bad.'
+            res.status(400).json({
+              message: 'Saving user to database went wrong.',
             });
             return;
           }
 
-          // Send the user's information to the frontend
-          // We can use also: res.status(200).json(req.user);
-          res.status(200).json(aNewUser);
+          // Automatically log in user after sign up
+          req.login(aNewUser, (err) => {
+            if (err) {
+              res.status(500).json({
+                message: 'Login after signup went bad.',
+              });
+              return;
+            }
+
+            // Send the user's information to the frontend
+            // We can use also: res.status(200).json(req.user);
+            res.status(200).json(aNewUser);
+          });
         });
       });
     });
@@ -111,7 +121,7 @@ authRoutes.post('/login', (req, res, next) => {
   passport.authenticate('local', (err, theUser, failureDetails) => {
     if (err) {
       res.status(500).json({
-        message: 'Something went wrong authenticating user'
+        message: 'Something went wrong authenticating user',
       });
       return;
     }
@@ -127,7 +137,7 @@ authRoutes.post('/login', (req, res, next) => {
     req.login(theUser, (err) => {
       if (err) {
         res.status(500).json({
-          message: 'Session save went bad.'
+          message: 'Session save went bad.',
         });
         return;
       }
@@ -138,7 +148,7 @@ authRoutes.post('/login', (req, res, next) => {
   });
 });
 
-// LOGOUT 
+// LOGOUT
 authRoutes.get('/logout', (req, res, next) => {
   // req.logout() is defined by passport
   req.logout();
