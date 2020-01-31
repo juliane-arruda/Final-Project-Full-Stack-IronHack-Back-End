@@ -8,12 +8,6 @@ const awsRekognition = new aws.Rekognition({
   region: 'us-east-1',
 });
 
-const dog = 'https://www.petlove.com.br/images/breeds/216944/profile/original/Screen_Shot_2019-11-22_at_17.22.11.png?1574454200';
-const cat = 'https://ak8.picdn.net/shutterstock/videos/18338188/thumb/1.jpg';
-const cat2 = 'https://img.zipanuncios.com.br/1854532/2.jpg';
-const fish = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQTjx5pZmzcO7FXGAixKuDvA-Zh2H1-fCkh2peNsvvkO3yg3pWx&s';
-const passaro = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRaPgDHCG8aP5apav7lV1tqw8gBSN6ubcJyRCTdUGc8uu9iy-6TOA&s';
-
 const detectUrl = (url) => axios.get(url, {
   responseType: 'arraybuffer',
 }).then((response) => {
@@ -23,14 +17,31 @@ const detectUrl = (url) => axios.get(url, {
       // Bytes: Buffer.from(catImg, 'base64'),
     },
   };
-  awsRekognition.detectLabels(params, (err, data) => {
-    if (err) {
-      console.log(err, err.stack); // an error occurred
-      return;
-    }
-    const catOrDog = data.Labels.filter((pet) => pet.Name === 'Cat' || pet.Name === 'Dog');
-    console.log(catOrDog[0].Name);
-    console.log(data); // successful response
+
+  return new Promise((resolve, reject) => {
+    awsRekognition.detectLabels(params, (err, data) => {
+      if (err) {
+        console.log(err, err.stack); // an error occurred
+        reject(err);
+        return;
+      }
+      // const catOrDog = data.Labels.filter((pet) => pet.Name === 'Cat' || pet.Name === 'Dog');
+      const cat = data.Labels.filter((pet) => pet.Name === 'Cat');
+      const dog = data.Labels.filter((pet) => pet.Name === 'Dog');
+      // console.log(catOrDog[0].Name);
+      // console.log(data); // successful response
+      let type = null;
+      if (dog.length > 0) {
+        type = 'dog';
+      } else if (cat.length) {
+        type = 'cat';
+      } else {
+        type = null;
+      }
+      resolve({
+        type,
+      });
+    });
   });
 }).catch((error) => console.log(error));
 
@@ -50,4 +61,3 @@ const detectUrl = (url) => axios.get(url, {
 module.exports = {
   detectUrl,
 };
-
