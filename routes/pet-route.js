@@ -40,6 +40,19 @@ router.get('/pets', (req, res, next) => {
     });
 });
 
+// GET route => to get pets perdidos
+router.get('/pets-perdidos', (req, res, next) => {
+  Pet.find().filter({
+    
+  })
+  .then((petsPerdidos) => {
+    res.json(petsPerdidos)
+  })
+  .catch((err) => {
+    res.json(err);
+  });
+})
+
 
 // GET route => to get a specific pet/detailed view
 router.get('/pets/:id', (req, res, next) => {
@@ -59,8 +72,9 @@ router.get('/pets/:id', (req, res, next) => {
     });
 });
 
+
 // PUT route => to update a specific pet
-router.put('/pets/:id/edit', (req, res, next) => {
+router.put('/pets/:id', (req, res, next) => {
   if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
     res.status(400).json({
       message: 'Specified id is not valid',
@@ -68,16 +82,16 @@ router.put('/pets/:id/edit', (req, res, next) => {
     return;
   }
 
-  Pet.findByIdAndUpdate(req.params.id, req.body)
-    .then(() => {
-      res.json({
-        message: ` ${req.params.id} atualizado com sucesso.`,
-      });
-    })
-    .catch((err) => {
-      res.json(err);
-    });
-});
+//   Pet.findByIdAndUpdate(req.params.id, req.body)
+//     .then((pet) => {
+//       res.json({
+//         pet
+//       });
+//     })
+//     .catch((err) => {
+//       res.json(err);
+//     });
+// });
 
 
 // DELETE route => to delete a specific pet
