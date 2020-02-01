@@ -11,13 +11,13 @@ const User = require('../models/user');
 // POST route => to create a new pet
 router.post('/pet', (req, res, next) => {
   Pet.create({
-    petName: req.body.petName,
-    petDescription: req.body.petDescription,
-    imageUrl: req.body.image,
-    owner: req.user._id,
-    petLocation: req.body.petLocation,
-    role: req.body.role
-  })
+      petName: req.body.petName,
+      petDescription: req.body.petDescription,
+      imageUrl: req.body.image,
+      owner: req.user._id,
+      petLocation: req.body.petLocation,
+      role: req.body.role,
+    })
     .then((response) => {
       res.json(response);
     })
@@ -30,8 +30,8 @@ router.post('/pet', (req, res, next) => {
 // GET route => to get all pets
 router.get('/pets', (req, res, next) => {
   Pet.find().sort({
-    createdAt: -1,
-  })
+      createdAt: -1,
+    })
     .then((allThePets) => {
       res.json(allThePets);
     })
@@ -42,16 +42,15 @@ router.get('/pets', (req, res, next) => {
 
 // GET route => to get pets perdidos
 router.get('/pets-perdidos', (req, res, next) => {
-  Pet.find().filter({
-    
-  })
-  .then((petsPerdidos) => {
-    res.json(petsPerdidos)
-  })
-  .catch((err) => {
+  // Pet.find().where('role', 'perdido')
+  Pet.find({
+    role: 'perdido',
+  }).then((petsPerdidos) => {
+    res.json(petsPerdidos);
+  }).catch((err) => {
     res.json(err);
   });
-})
+});
 
 
 // GET route => to get a specific pet/detailed view
@@ -79,18 +78,17 @@ router.put('/pets/:id', (req, res, next) => {
     res.status(400).json({
       message: 'Specified id is not valid',
     });
-    return;
   }
 
-//   Pet.findByIdAndUpdate(req.params.id, req.body)
-//     .then((pet) => {
-//       res.json({
-//         pet
-//       });
-//     })
-//     .catch((err) => {
-//       res.json(err);
-//     });
+  //   Pet.findByIdAndUpdate(req.params.id, req.body)
+  //     .then((pet) => {
+  //       res.json({
+  //         pet
+  //       });
+  //     })
+  //     .catch((err) => {
+  //       res.json(err);
+  //     });
 });
 
 
