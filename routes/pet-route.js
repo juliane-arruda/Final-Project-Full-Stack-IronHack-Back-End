@@ -42,7 +42,7 @@ router.get('/pets', (req, res, next) => {
 
 // GET route => to get pets perdidos
 router.get('/pets-perdidos', (req, res, next) => {
-  // Pet.find().where('role', 'perdido')
+  // Pet.find().where('role', 'perdido')
   Pet.find({
     role: 'perdido',
   }).then((petsPerdidos) => {
@@ -52,6 +52,17 @@ router.get('/pets-perdidos', (req, res, next) => {
   });
 });
 
+// GET route => to get pets encontrados
+router.get('/pets-perdidos', (req, res, next) => {
+  // Pet.find().where('role', 'encontrado')
+  Pet.find({
+    role: 'encontrado',
+  }).then((petsPerdidos) => {
+    res.json(petsPerdidos);
+  }).catch((err) => {
+    res.json(err);
+  });
+});
 
 // GET route => to get a specific pet/detailed view
 router.get('/pets/:id', (req, res, next) => {
@@ -80,15 +91,15 @@ router.put('/pets/:id', (req, res, next) => {
     });
   }
 
-  //   Pet.findByIdAndUpdate(req.params.id, req.body)
-  //     .then((pet) => {
-  //       res.json({
-  //         pet
-  //       });
-  //     })
-  //     .catch((err) => {
-  //       res.json(err);
-  //     });
+  Pet.findByIdAndUpdate(req.params.id, req.body)
+    .then((pet) => {
+      res.json({
+        pet
+      });
+    })
+    .catch((err) => {
+      res.json(err);
+    });
 });
 
 
