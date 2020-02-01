@@ -39,7 +39,9 @@ authRoutes.post('/signup', (req, res, next) => {
     return;
   }
 
-  User.findOne({ username }, (err, foundUser) => {
+  User.findOne({
+    username
+  }, (err, foundUser) => {
     if (err) {
       res.status(500).json({
         message: 'Username check went bad.',
@@ -65,6 +67,12 @@ authRoutes.post('/signup', (req, res, next) => {
 
     // comparecao com api da imagem
     Rekognition.detectUrl(imageUrl).then((imageResult) => {
+      if (imageResult.type === null) {
+        res.status(400).json({
+          message: 'animal not recognized',
+        });
+        return;
+      }
       const aNewPet = new Pet({
         petName,
         petDescription,
@@ -75,15 +83,7 @@ authRoutes.post('/signup', (req, res, next) => {
         type: imageResult.type,
       });
 
-      // if () {  // <== verificar error
-      //   aNewPet.save(err => { 
-      //     if (imageResult.type === null) { 
-      //       res.status(400).json({ 
-      //       message: 'animal not recognized' });
-      //     return;
-      // }
-    
-      aNewUser.save((err) => { 
+      aNewUser.save((err) => {
         if (err) {
           res.status(400).json({
             message: 'Saving user to database went wrong.',
@@ -91,7 +91,7 @@ authRoutes.post('/signup', (req, res, next) => {
           return;
         }
 
-        aNewPet.save((err) => { 
+        aNewPet.save((err) => {
           if (err) {
             res.status(400).json({
               message: 'Saving user to database went wrong.',
@@ -100,7 +100,7 @@ authRoutes.post('/signup', (req, res, next) => {
           }
 
           // Automatically log in user after sign up
-          req.login(aNewUser, (err) => { 
+          req.login(aNewUser, (err) => {
             if (err) {
               res.status(500).json({
                 message: 'Login after signup went bad.',
@@ -126,16 +126,24 @@ authRoutes.post('/login', (req, res, next) => {
     password,
   } = req.body;
   if (username === '' || password === '') {
-    res.json({ errorMessage }, { errorMessage: 'Please enter both, username and password to sign up.' });
+    res.json({
+      errorMessage
+    }, {
+      errorMessage: 'Please enter both, username and password to sign up.'
+    });
     return;
   }
 
   User.findOne({
-    username,
-  })
+      username,
+    })
     .then((user) => {
       if (!user) {
-        res.json({ errorMessage }, { errorMessage: "The username doesn't exist." });
+        res.json({
+          errorMessage
+        }, {
+          errorMessage: "The username doesn't exist."
+        });
         return;
       }
       if (bcrypt.compareSync(password, user.password)) {
@@ -145,7 +153,11 @@ authRoutes.post('/login', (req, res, next) => {
           user,
         });
       } else {
-        res.json({ errorMessage }, { errorMessage: 'Incorrect password' });
+        res.json({
+          errorMessage
+        }, {
+          errorMessage: 'Incorrect password'
+        });
       }
     })
     .catch((error) => {
