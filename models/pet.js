@@ -1,12 +1,29 @@
 const mongoose = require('mongoose');
 
-const { Schema } = mongoose;
+const {
+  Schema,
+} = mongoose;
+
+const pointSchema = new mongoose.Schema({
+  type: {
+    type: String,
+    enum: ['Point'],
+    required: true,
+  },
+  coordinates: {
+    type: [Number],
+    required: true,
+  },
+});
 
 const petSchema = new Schema({
   petName: String,
   petDescription: String,
   imageUrl: String,
-  petLocation: String,
+  petLocation: {
+    type: pointSchema,
+    required: true,
+  },
   petDate: String,
   type: {
     type: String,
@@ -20,8 +37,7 @@ const petSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: 'User',
   },
-},
-{
+}, {
   timestamps: true,
 });
 
