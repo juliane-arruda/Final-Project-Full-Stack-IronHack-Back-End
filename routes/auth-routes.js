@@ -9,9 +9,6 @@ const Rekognition = require('../configs/rekognition');
 const authRoutes = express.Router();
 
 authRoutes.post('/signup', (req, res, next) => {
-
-  // console.log(req.body)
-
   const {
     username,
     password,
@@ -40,7 +37,7 @@ authRoutes.post('/signup', (req, res, next) => {
   }
 
   User.findOne({
-    username
+    username,
   }, (err, foundUser) => {
     if (err) {
       res.status(500).json({
@@ -77,7 +74,13 @@ authRoutes.post('/signup', (req, res, next) => {
         petName,
         petDescription,
         imageUrl,
-        petLocation,
+        petLocation: {
+          type: 'Point',
+          coordinates: [
+            petLocation.longitude,
+            petLocation.latitude,
+          ],
+        },
         petDate,
         role,
         type: imageResult.type,
@@ -127,22 +130,22 @@ authRoutes.post('/login', (req, res, next) => {
   } = req.body;
   if (username === '' || password === '') {
     res.json({
-      errorMessage
+      errorMessage,
     }, {
-      errorMessage: 'Please enter both, username and password to sign up.'
+      errorMessage: 'Please enter both, username and password to sign up.',
     });
     return;
   }
 
   User.findOne({
-      username,
-    })
+    username,
+  })
     .then((user) => {
       if (!user) {
         res.json({
-          errorMessage
+          errorMessage,
         }, {
-          errorMessage: "The username doesn't exist."
+          errorMessage: "The username doesn't exist.",
         });
         return;
       }
@@ -154,9 +157,9 @@ authRoutes.post('/login', (req, res, next) => {
         });
       } else {
         res.json({
-          errorMessage
+          errorMessage,
         }, {
-          errorMessage: 'Incorrect password'
+          errorMessage: 'Incorrect password',
         });
       }
     })
@@ -164,40 +167,6 @@ authRoutes.post('/login', (req, res, next) => {
       next(error);
     });
 });
-
-
-// authRoutes.post('/login', (req, res, next) => {
-//   console.log("1")
-//   passport.authenticate('local', (err, theUser, failureDetails) => {
-//     console.log('erro')
-//     if (err) {
-//       res.status(500).json({
-//         message: 'Something went wrong authenticating user'
-//       });
-//       return;
-//     }
-// console.log('2')
-//     if (!theUser) {
-//       // "failureDetails" contains the error messages
-//       // from our logic in "LocalStrategy" { message: '...' }.
-//       res.status(401).json(failureDetails);
-//       return;
-//     }
-
-//     // save user in session
-//     req.login(theUser, (err) => {
-//       if (err) {
-//         res.status(500).json({
-//           message: 'Session save went bad.'
-//         });
-//         return;
-//       }
-
-//       // We are now logged in (that's why we can also send req.user)
-//       res.status(200).json(theUser);
-//     });
-//   });
-// });
 
 // LOGOUT
 authRoutes.get('/logout', (req, res, next) => {
