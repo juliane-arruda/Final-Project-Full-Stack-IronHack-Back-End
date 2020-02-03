@@ -4,7 +4,7 @@ const express = require('express');
 const bcrypt = require('bcryptjs');
 const User = require('../models/user');
 const Pet = require('../models/pet');
-const Rekognition = require('../configs/rekognition');
+const googleVision = require('../configs/google-vision');
 
 const authRoutes = express.Router();
 
@@ -21,6 +21,12 @@ authRoutes.post('/signup', (req, res, next) => {
     petDate,
   } = req.body;
 
+  if (!petLocation) {
+    res.status(400).json({
+      message: 'localização não definida',
+    });
+    return;
+  }
 
   if (!username || !password) {
     res.status(400).json({
@@ -63,10 +69,17 @@ authRoutes.post('/signup', (req, res, next) => {
     });
 
     // comparecao com api da imagem
-    Rekognition.detectUrl(imageUrl).then((imageResult) => {
+    googleVision.detectUrl(imageUrl).then((imageResult) => {
+      if (imageResult.isUnsafe) {
+        res.status(400).json({
+          message: 'conteúdo adulto não permitido',
+        });
+        return;
+      }
+
       if (imageResult.type === null) {
         res.status(400).json({
-          message: 'animal not recognized',
+          message: 'animal não encontrado',
         });
         return;
       }
@@ -84,6 +97,7 @@ authRoutes.post('/signup', (req, res, next) => {
         petDate,
         role,
         type: imageResult.type,
+        labels: imageResult.labels,
       });
 
       aNewUser.save((err) => {
