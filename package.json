@@ -8,6 +8,7 @@
     "dev-windows": "nodemon ./bin/www"
   },
   "dependencies": {
+    "@google-cloud/vision": "^1.8.0",
     "aws-sdk": "^2.610.0",
     "axios": "^0.19.2",
     "bcryptjs": "^2.4.3",
