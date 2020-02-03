@@ -30,6 +30,7 @@ const petSchema = new Schema({
     enum: ['dog', 'cat'],
   },
   labels: [String],
+  breed: [String],
   role: {
     type: String,
     enum: ['perdido', 'encontrado'],

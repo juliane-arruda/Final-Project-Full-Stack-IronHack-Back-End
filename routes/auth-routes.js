@@ -98,8 +98,9 @@ authRoutes.post('/signup', (req, res, next) => {
         role,
         type: imageResult.type,
         labels: imageResult.labels,
+        breed: imageResult.breed,
       });
-
+      console.log(aNewPet)
       aNewUser.save((err) => {
         if (err) {
           res.status(400).json({
@@ -107,9 +108,10 @@ authRoutes.post('/signup', (req, res, next) => {
           });
           return;
         }
-
+        
         aNewPet.save((err) => {
           if (err) {
+            console.log(err)
             res.status(400).json({
               message: 'Saving user to database went wrong.',
             });
