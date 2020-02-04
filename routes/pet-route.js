@@ -9,7 +9,7 @@ const User = require('../models/user');
 
 
 // POST route => to create a new pet
-router.post('/pet', (req, res, next) => {
+router.post('/pet', (req, res, _next) => {
   Pet.create({
       petName: req.body.petName,
       petDescription: req.body.petDescription,
@@ -28,7 +28,7 @@ router.post('/pet', (req, res, next) => {
 
 
 // GET route => to get all pets
-router.get('/pets', (req, res, next) => {
+router.get('/pets', (_req, res, _next) => {
   Pet.find().sort({
       createdAt: -1,
     })
@@ -41,7 +41,7 @@ router.get('/pets', (req, res, next) => {
 });
 
 // GET route => to get pets perdidos
-router.get('/pets-perdidos', (req, res, next) => {
+router.get('/pets-perdidos', (_req, res, _next) => {
   // Pet.find().where('role', 'perdido')
   Pet.find({
     role: 'perdido',
@@ -53,19 +53,22 @@ router.get('/pets-perdidos', (req, res, next) => {
 });
 
 // GET route => to get pets encontrados
-router.get('/pets-perdidos', (req, res, next) => {
+router.get('/pets-encontrados', (_req, res, _next) => {
   // Pet.find().where('role', 'encontrado')
   Pet.find({
     role: 'encontrado',
-  }).then((petsPerdidos) => {
-    res.json(petsPerdidos);
+  }).then((petsEncontrados) => {
+    res.json(petsEncontrados);
   }).catch((err) => {
     res.json(err);
   });
 });
 
+
+
+
 // GET route => to get a specific pet/detailed view
-router.get('/pets/:id', (req, res, next) => {
+router.get('/pets/:id', (req, res, _next) => {
   if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
     res.status(400).json({
       message: 'Specified id is not valid',
@@ -84,7 +87,7 @@ router.get('/pets/:id', (req, res, next) => {
 
 
 // PUT route => to update a specific pet
-router.put('/pets/:id', (req, res, next) => {
+router.put('/pets/:id', (req, res, _next) => {
   if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
     res.status(400).json({
       message: 'Specified id is not valid',
@@ -104,7 +107,7 @@ router.put('/pets/:id', (req, res, next) => {
 
 
 // DELETE route => to delete a specific pet
-router.delete('/pets/:id', (req, res, next) => {
+router.delete('/pets/:id', (req, res, _next) => {
   if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
     res.status(400).json({
       message: 'Specified id is not valid',
@@ -123,5 +126,50 @@ router.delete('/pets/:id', (req, res, next) => {
     });
 });
 
+// GET route => to get a specific pet and compare 
+router.get('/pet/:id/search', (req, res, _next) => {
+  if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+    res.status(400).json({
+      message: 'Specified id is not valid',
+    });
+    return;
+  }
+
+  Pet.findById(req.params.id)
+    .then((petSearch) => {
+      // console.log(petSearch) 
+      const {role, type} = petSearch;
+
+      let newRole = "";
+
+      role === "encontrado" ? newRole = "perdido" : newRole = "encontrado"
+      
+      Pet.find()
+      // const { role: newRole, type } = petSearch
+      .select({_id: 0, breed: 1})
+      .then((petBreeds) => {
+       
+        let foundPet = false;
+          let similarPets = petBreeds.filter((element) =>  { petSearch.breed.forEach((e) => {
+             foundPet = false;
+            if (element.breed.includes(e)) foundPet = true;
+          })
+          return foundPet
+        })
+            res.json(similarPets)
+      })
+        .catch((err) => {
+          res.json(err);
+        });
+
+
+    })
+    .catch((err) => {
+      res.json(err);
+    });
+
+
+});
 
 module.exports = router;
+
