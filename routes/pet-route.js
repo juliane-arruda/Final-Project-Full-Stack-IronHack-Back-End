@@ -6,7 +6,7 @@ const router = express.Router();
 
 const Pet = require('../models/pet');
 const User = require('../models/user');
-
+const nodemailer = require('nodemailer')
 
 // POST route => to create a new pet
 router.post('/pet', (req, res, _next) => {
@@ -76,7 +76,7 @@ router.get('/pets/:id', (req, res, _next) => {
     return;
   }
 
-  Pet.findById(req.params.id)
+  Pet.findById(req.params.id).populate("owner")
     .then((response) => {
       res.status(200).json(response);
     })
@@ -169,6 +169,27 @@ router.get('/pet/search/:id', (req, res, _next) => {
     });
 
 
+});
+
+router.post('/send-email', (req, res, next) => {
+  console.log(req.body)
+  let { userEmail, petEmail } = req.body;
+  let transporter = nodemailer.createTransport({
+    service: 'Gmail',
+    auth: {
+      user: 'icatyourpet@gmail.com',
+      pass: process.env.EMAIL_PASSWORD
+    }
+  });
+  transporter.sendMail({
+    from: '"I Cat Your Pet " <icatyourpet@gmail.com>',
+    to: petEmail, 
+    subject: 'Informações sobre seu Pet', 
+    
+    text: `Tenho informações sobre esse pet! Por favor entre em contato comigo através do email: ${userEmail}`
+  })
+  .then(info => res.json( {message:"enviado com sucesso"}))
+  .catch(error => console.log(error));
 });
 
 module.exports = router;
