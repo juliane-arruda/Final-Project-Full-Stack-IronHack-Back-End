@@ -127,7 +127,7 @@ router.delete('/pets/:id', (req, res, _next) => {
 });
 
 // GET route => to get a specific pet and compare 
-router.get('/pet/:id/search', (req, res, _next) => {
+router.get('/pet/search/:id', (req, res, _next) => {
   if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
     res.status(400).json({
       message: 'Specified id is not valid',
@@ -144,9 +144,9 @@ router.get('/pet/:id/search', (req, res, _next) => {
 
       role === "encontrado" ? newRole = "perdido" : newRole = "encontrado"
       
-      Pet.find()
-      // const { role: newRole, type } = petSearch
-      .select({_id: 0, breed: 1})
+      Pet.find({ role: newRole, type } )
+      .populate('owner')
+      // .select({_id: 0, breed: 1})
       .then((petBreeds) => {
        
         let foundPet = false;
