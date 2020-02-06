@@ -35,7 +35,9 @@ async function detectUrl(imageUrl) {
 
   const breed = result.labelAnnotations.filter((element) => element.description !== 'Dog' && element.description !== 'Cat' && element.description !== 'Facial expression' && element.description !== 'Felidae' && element.description !== 'Whiskers' && element.description !== 'Small to medium-sized cats' && element.description !== 'Snout' && element.description !== 'Mammal' && element.description !== 'Vertebrate' && element.description !== 'Dog breed' && element.description !== 'Canidae' && element.description !== 'Skin' && element.description !== 'Companion dog' && element.description !== 'Carnivore').map((e) => e.description);
 
+  console.log(labels);
   
+
   const cat = result.labelAnnotations.filter((pet) => pet.description === 'Cat');
   const dog = result.labelAnnotations.filter((pet) => pet.description === 'Dog');
   let type = null;
