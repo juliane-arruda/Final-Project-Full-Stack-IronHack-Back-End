@@ -8,18 +8,26 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_SECRET,
 });
 
-const storage = cloudinaryStorage({
+let storage = cloudinaryStorage({
   cloudinary,
   folder: 'folder-name', // The name of the folder in cloudinary
   allowedFormats: ['jpg', 'png'],
+  // transformation: [{ height: 380, width: 380, crop: "imagga_crop", sign_url: true }],
   filename(req, file, cb) {
     console.log(file.originalname);
     cb(null, file.originalname); // The file on cloudinary would have the same name as the original file name
   },
 });
 
+
+
 const uploadCloud = multer({
   storage,
 });
 
 module.exports = uploadCloud;
+
+
+
+
+                
