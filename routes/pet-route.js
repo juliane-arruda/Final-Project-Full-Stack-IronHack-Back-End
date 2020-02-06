@@ -138,31 +138,47 @@ router.get('/pet/search/:id', (req, res, _next) => {
   Pet.findById(req.params.id)
     .then((petSearch) => {
       // console.log(petSearch) 
+     
+
       const {role, type} = petSearch;
 
       let newRole = "";
 
       role === "encontrado" ? newRole = "perdido" : newRole = "encontrado"
       
-      Pet.find({ role: newRole, type } )
+      Pet.find({ role: newRole, type:type} )
       .populate('owner')
-      // .select({_id: 0, breed: 1})
       .then((petBreeds) => {
+        
        
         let foundPet = false;
-          let similarPets = petBreeds.filter((element) =>  { petSearch.breed.forEach((e) => {
-             foundPet = false;
+        let similarPets = [];
+          similarPets = petBreeds.filter((element) =>  { 
+            console.log(element.breed)
+            petSearch.breed.forEach((e) => {
+             foundPet = false; 
             if (element.breed.includes(e)) foundPet = true;
-          })
+            console.log(foundPet, e)
+            })
           return foundPet
         })
+        console.log(similarPets)
+      
+
             res.json(similarPets)
+            return
       })
         .catch((err) => {
           res.json(err);
         });
+        
 
-
+        // POST /signup 200 2056.810 ms - 947
+        // false ["Shetland sheepdog","Phalène","Scotch collie"] Scotch collie
+        // false ["Shetland sheepdog","Phalène","Scotch collie"] Collie
+        // false ["Shetland sheepdog","Phalène","Scotch collie"] Rough collie
+        // false ["Shetland sheepdog","Phalène","Scotch collie"] Shetland sheepdog
+        // GET /pet/search/5e3c17de18b0a43d5ed75bc9 200 26.047 ms - 876
     })
     .catch((err) => {
       res.json(err);
