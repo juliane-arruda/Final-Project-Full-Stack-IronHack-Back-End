@@ -85,6 +85,11 @@ app.use('/', require('./routes/photo-routes'));
 app.use('/', authRoutes);
 app.use('/', pets);
 
+app.use((req, res, next) => {
+  // If no routes match, send them the React HTML.
+  res.sendFile(__dirname + "/public/index.html");
+});
+
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
   next(createError(404));
