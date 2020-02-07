@@ -1,8 +1,10 @@
 package-lock.json
 yarn.lock
-key.json
-key1.json
 
+
+
+
+key.json
 # Created by https://www.gitignore.io/api/osx,node,linux,windows,react
 # Edit at https://www.gitignore.io/?templates=osx,node,linux,windows,react
 
